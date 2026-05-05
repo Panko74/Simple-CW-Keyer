@@ -1,37 +1,62 @@
 # Simple-CW-Keyer
 
-A simple and efficient Iambic keyer based on **Arduino Nano**. This project allows you to send Morse code using a dual-lever paddle, featuring adjustable speed and audio feedback.
+A professional-grade Morse code iambic keyer based on the Arduino platform. This project features a 600Hz hardware PWM sidetone with a logarithmic volume curve, an intuitive OLED interface, and persistent settings storage.
 
-## 🛠️ Features
-- Iambic Mode (Type B).
-- Adjustable speed (WPM) via potentiometer.
-- Audio output via buzzer or speaker.
-- Compact design optimized for Arduino Nano.
+## 🚀 Key Features
 
-## 🔌 Pinout / Wiring Diagram
+*   **Three Operating Modes:**
+    *   **Iambic A:** Standard iambic timing.
+    *   **Iambic B:** Added dot/dash memory for high-speed efficiency.
+    *   **Straight Key:** Manual mode for traditional keys or external controllers.
+*   **Logarithmic Volume Control:** 11 levels (0-10) mapped to an exponential curve to match human hearing perception. Level 0 is full mute.
+*   **Hardware PWM Sidetone:** Generates a clean 600Hz tone using Arduino's Timer 1 (Pin 9) for low-latency audio.
+*   **Smart OLED Interface:** High-contrast display for WPM speed, mode selection, and TX status.
+*   **Practice Mode (Bypass):** Toggle the radio output to practice your timing without keying your transmitter.
+*   **EEPROM Persistence:** Saves WPM, Mode, and Volume settings permanently.
+*   **Power Management:** Auto-dims the display after 15 seconds of inactivity to prevent burn-in and save power.
 
-| Component        | Arduino Nano Pin | Notes                        |
-| :--------------- | :--------------- | :--------------------------- |
-| **Paddle DIT**   | D2               | Connects to GND when pressed |
-| **Paddle DAH**   | D3               | Connects to GND when pressed |
-| **Potentiometer**| A0               | Speed control (WPM)          |
-| **Buzzer/Audio** | D5               | Audio signal output          |
-| **Status LED**   | D13              | Built-in LED (optional)      |
+## 🛠 Hardware Setup
 
-## 🚀 Getting Started
-1. Ensure you have the **Arduino IDE** installed on your computer.
-2. Download the `.ino` file from this repository.
-3. Connect your Arduino Nano to your PC.
-4. Upload the sketch by clicking the "Upload" button.
-5. Wire the components according to the table above.
+### Component List
+*   **MCU:** Arduino Nano/Uno (ATmega328P).
+*   **Display:** SSD1306 OLED (128x64) via I2C.
+*   **Audio:** Passive Piezo Buzzer.
+*   **Input:** CW Paddle (Stereo jack) + 4 Tactile buttons.
+*   **Output:** Transistor or Optocoupler circuit to trigger your Radio's Key line.
 
-## ⚙️ Configuration (Optional)
-You can customize settings directly in the code, such as:
-- Tone frequency (Hz).
-- Speed range (Minimum and Maximum WPM).
+### Pinout Mapping
+| Pin | Function | Description |
+|:---:|:---|:---|
+| **D2** | Dot Paddle | Input (Internal Pull-up) |
+| **D3** | Dash Paddle | Input (Internal Pull-up) |
+| **D4** | WPM Up | Increases speed |
+| **D5** | WPM Down | Decreases speed |
+| **D6** | Mode / Shift | Changes mode / Modifier for Volume |
+| **D8** | Bypass / Save | Toggle TX / Long press to Save to EEPROM |
+| **D9** | Buzzer | **PWM Output** (Hardcoded for Timer 1) |
+| **D12**| Radio Out | Digital Output to Transmitter |
+| **A4** | SDA | OLED Data |
+| **A5** | SCL | OLED Clock |
 
-## 📄 License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## 🕹 Operation Guide
 
----
-*Developed for the love of Amateur Radio.*
+### Basic Controls
+*   **Adjust Speed:** Tap **WPM Up** or **WPM Down**.
+*   **Change Mode:** Tap the **Mode** button to cycle through Straight -> Iambic A -> Iambic B.
+*   **Bypass TX:** Tap the **Bypass** button. The screen will toggle between `[ONLINE]` and `[PRACTICE]`.
+
+### Advanced Functions
+*   **Logarithmic Volume Adjustment:** 
+    1.  Hold the **Mode** button (keep it pressed).
+    2.  Tap **WPM Up** to increase or **WPM Down** to decrease volume.
+    3.  Release **Mode**. (The mode will not change if a volume adjustment was detected).
+*   **Save Settings:** Long press the **Bypass** button for 1 second. The screen will flash `>> SAVED! <<`. Your settings will now load automatically on the next boot.
+
+## ⚙️ Installation & Requirements
+
+1.  **Libraries:** Install the **U8g2** library via the Arduino Library Manager.
+2.  **Board:** Select **Arduino Nano** (or Uno). 
+3.  **Note:** This code utilizes direct register access for **Timer 1** to ensure a precise 600Hz tone. Do not move the Buzzer from Pin 9, as it is hardware-dependent.
+
+## 📜 License
+Open Source. Developed for the Ham Radio community. 73!
