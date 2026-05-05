@@ -86,9 +86,10 @@ The volume is controlled via **Phase Correct PWM** on **Timer 1**. The duty cycl
 
 ## ⚙️ Installation & Requirements
 
-1.  **Libraries:** Install the **U8g2** library via the Arduino Library Manager.
-2.  **Board:** Select **Arduino Nano** (or Uno). 
-3.  **Note:** This code utilizes direct register access for **Timer 1** to ensure a precise 600Hz tone. Do not move the Buzzer from Pin 9, as it is hardware-dependent.
+1.  **Arduino Sketch:** Download the latest release from https://github.com/Panko74/Simple-CW-Keyer/releases
+2.  **Libraries:** Install the **U8g2** library via the Arduino Library Manager.
+3.  **Board:** Select **Arduino Nano** (or Uno). 
+4.  **Note:** This code utilizes direct register access for **Timer 1** to ensure a precise 600Hz tone. Do not move the Buzzer from Pin 9, as it is hardware-dependent.
 
 ## 📜 License
 Open Source. Developed for the Ham Radio community. 73!
