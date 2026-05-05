@@ -1,0 +1,12 @@
+# File compilati (binari)
+*.elf
+*.hex
+*.o
+
+# Cartelle temporanee di build
+build/
+bin/
+
+# File di sistema e log
+.DS_Store
+*.log
