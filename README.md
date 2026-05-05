@@ -15,28 +15,60 @@ A professional-grade Morse code iambic keyer based on the Arduino platform. This
 *   **EEPROM Persistence:** Saves WPM, Mode, and Volume settings permanently.
 *   **Power Management:** Auto-dims the display after 15 seconds of inactivity to prevent burn-in and save power.
 
-## 🛠 Hardware Setup
+# 🛠 Hardware Specifications & Wiring Guide
 
-### Component List
-*   **MCU:** Arduino Nano/Uno (ATmega328P).
-*   **Display:** SSD1306 OLED (128x64) via I2C.
-*   **Audio:** Passive Piezo Buzzer.
-*   **Input:** CW Paddle (Stereo jack) + 4 Tactile buttons.
-*   **Output:** Transistor or Optocoupler circuit to trigger your Radio's Key line.
+This document describes the electrical connections and the circuit design for the Arduino CW Iambic Keyer.
 
-### Pinout Mapping
-| Pin | Function | Description |
-|:---:|:---|:---|
-| **D2** | Dot Paddle | Input (Internal Pull-up) |
-| **D3** | Dash Paddle | Input (Internal Pull-up) |
-| **D4** | WPM Up | Increases speed |
-| **D5** | WPM Down | Decreases speed |
-| **D6** | Mode / Shift | Changes mode / Modifier for Volume |
-| **D8** | Bypass / Save | Toggle TX / Long press to Save to EEPROM |
-| **D9** | Buzzer | **PWM Output** (Hardcoded for Timer 1) |
-| **D12**| Radio Out | Digital Output to Transmitter |
-| **A4** | SDA | OLED Data |
-| **A5** | SCL | OLED Clock |
+## 1. Connection Table (Netlist)
+
+| Component | Pin | Arduino Pin | Description |
+| :--- | :--- | :--- | :--- |
+| **OLED Display** | VCC | 5V | Power supply |
+| **OLED Display** | GND | GND | Ground |
+| **OLED Display** | SCL | A5 | I2C Clock |
+| **OLED Display** | SDA | A4 | I2C Data |
+| **Buzzer** | + | **D9** | **Must be D9** (Timer 1 PWM) |
+| **Buzzer** | - | GND | Ground |
+| **Paddle Dot** | Tip | D2 | Active LOW (Internal Pull-up) |
+| **Paddle Dash** | Ring | D3 | Active LOW (Internal Pull-up) |
+| **Button WPM Up**| Pin A | D4 | Active LOW (Internal Pull-up) |
+| **Button WPM Down**| Pin A | D5 | Active LOW (Internal Pull-up) |
+| **Button Mode** | Pin A | D6 | Active LOW (Internal Pull-up) |
+| **Button Bypass**| Pin A | D8 | Active LOW (Internal Pull-up) |
+| **Radio Out** | Signal| D12 | To Isolation Circuit |
+
+*Note: All buttons and paddles should connect to **GND** when pressed.*
+
+---
+
+## 2. Recommended Radio Interface (Opto-Isolation)
+
+To protect your Arduino from high voltages or transients on the radio's keying line, use an optoisolator circuit.
+
+### Components:
+*   **U1:** PC817 or 4N35 Optocoupler
+*   **R1:** 470Ω Resistor
+
+### Schematic Logic:
+1.  **Arduino D12** ⮕ **R1 (470Ω)** ⮕ **Anode (Pin 1)** of U1.
+2.  **Arduino GND** ⮕ **Cathode (Pin 2)** of U1.
+3.  **Radio Key Line (+)** ⮕ **Collector (Pin 4)** of U1.
+4.  **Radio Ground/Shield** ⮕ **Emitter (Pin 3)** of U1.
+
+---
+
+## 3. Logarithmic Volume Rationale
+
+The volume is controlled via **Phase Correct PWM** on **Timer 1**. The duty cycle follows this lookup table for a natural auditory increase:
+
+| Level | Duty Cycle (OCR1A value) | Perception |
+| :---: | :---: | :--- |
+| 0 | 0 | Muted / Off |
+| 1 | 2 | Very Faint |
+| 5 | 60 | Comfortable Room Volume |
+| 10| 833 | Max Volume (50% Square Wave) |
+
+*The ICR1 register is set to 1666 to achieve a ~600Hz frequency with an 8MHz/16MHz clock and prescaler 8.*
 
 ## 🕹 Operation Guide
 
