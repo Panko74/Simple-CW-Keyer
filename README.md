@@ -7,6 +7,7 @@ A professional-grade Morse code iambic keyer based on the Arduino platform. This
 *   **Three Operating Modes:**
     *   **Iambic A:** Standard iambic timing.
     *   **Iambic B:** Added dot/dash memory for high-speed efficiency.
+    *   **BUG-SIM:** A smart Bug simulator for single and dual paddles and sideswipers.
     *   **Straight Key:** Manual mode for traditional keys or external controllers.
 *   **Logarithmic Volume Control:** 11 levels (0-10) mapped to an exponential curve to match human hearing perception. Level 0 is full mute.
 *   **Hardware PWM Sidetone:** Generates a clean 600Hz tone using Arduino's Timer 1 (Pin 9) for low-latency audio.
